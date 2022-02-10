@@ -44,15 +44,15 @@ jobs:
     needs: build
     name: Deploy to staging
     environment:
-        name: staging
+        name: stagin
         url: ${{ steps.deploy_staging.outputs.webapp-url }}
     runs-on: ubuntu-latest
     steps:
-    # Download artifacts
-    - name: Download artifacts
-      uses: actions/download-artifact@v2
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core SDK ${{ env.DOTNET_CORE_VERSION }}
+      uses: actions/setup-dotnet@v1
       with:
-        name: webapp
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
   deploy:
     needs: staging
