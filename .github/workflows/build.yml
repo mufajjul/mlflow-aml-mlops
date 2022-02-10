@@ -1,3 +1,8 @@
+name: build
+on:
+  push:
+    branches:
+    - '*'
 jobs:
   build:
     name: Build
