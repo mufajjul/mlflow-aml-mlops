@@ -41,17 +41,6 @@ jobs:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Restore packages
       run: dotnet restore "${{ env.PROJECT_PATH }}"
-    - name: Build app
-      run: dotnet build "${{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --no-restore
-    - name: Test app
-      run: dotnet test "${{ env.PROJECT_PATH }}" --no-build
-    - name: Publish app for deploy
-      run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
   staging:
     needs: build
@@ -67,15 +56,6 @@ jobs:
       with:
         name: webapp
 
-    # Deploy to App Service Linux
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      id: deploy_staging
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        slot-name: staging
-
   deploy:
     needs: staging
     environment:
@@ -89,11 +69,3 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: webapp
-
-    # Deploy to App Service Linux
-    - name: Deploy to Azure WebApp
-      id: deploy_production
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
