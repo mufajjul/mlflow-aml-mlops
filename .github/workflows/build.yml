@@ -44,7 +44,7 @@ jobs:
     needs: build
     name: Deploy to staging
     environment:
-        name: stagin
+        name: staging
         url: ${{ steps.deploy_staging.outputs.webapp-url }}
     runs-on: ubuntu-latest
     steps:
